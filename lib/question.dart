@@ -33,7 +33,7 @@ class _MyHomePageState extends State<QuestionsPage> {
             child: Column(
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.only(bottom: 10),
+                  margin: EdgeInsets.only(bottom: 11),
                   child: Row(
                     children: <Widget>[
                       Align(
