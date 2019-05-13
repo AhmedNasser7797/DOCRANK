@@ -12,6 +12,9 @@ class List_Of_Doctors extends StatefulWidget {
 class List_Of_DoctorsState extends State<List_Of_Doctors> {
   @override
   Widget build(BuildContext context) {
+
+   // List<7aga> name = List<7aga>;
+
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
