@@ -24,19 +24,26 @@ class insert_doctorState extends State<insert_doctor> {
             print('Menu button');
           },
         ),
-        title: new Text("DocRank"),
+        title: new Text("DocRank"),centerTitle: true,
         backgroundColor: Colors.lightBlue,
       ),
+
       body: new Container(
-        margin: EdgeInsets.all(20.0),
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween  ,
+          alignment: Alignment.center,
+        child:Container(
+
+        width: MediaQuery.of(context).size.width,
+
+        padding: const EdgeInsets.only(
+            right: 10.0, left: 10.0, top: 10.0, bottom: 10.0),
+
+       // margin: EdgeInsets.all(20.0),
+        child: new ListView(
           children: <Widget>[
-            new Text(
-              "ahmed",
-              style: new TextStyle(color: Colors.deepOrange),
+            Text("ahmed", style: new TextStyle(color: Colors.deepOrange),textAlign: TextAlign.center,
             ),
             new TextField(
+
               keyboardAppearance: Brightness.dark,
               scrollPadding: EdgeInsets.all(10.0),
               decoration: InputDecoration(
@@ -49,6 +56,9 @@ class insert_doctorState extends State<insert_doctor> {
               textAlign: TextAlign.center,
               enableInteractiveSelection: true,
             ),
+            Padding(padding: EdgeInsets.only(top: 15)),
+
+
             new TextField(
               keyboardAppearance: Brightness.dark,
               scrollPadding: EdgeInsets.all(10.0),
@@ -62,6 +72,7 @@ class insert_doctorState extends State<insert_doctor> {
               textAlign: TextAlign.center,
               enableInteractiveSelection: true,
             ),
+            Padding(padding: EdgeInsets.only(top: 15)),
             new TextField(
               keyboardAppearance: Brightness.dark,
               scrollPadding: EdgeInsets.all(10.0),
@@ -75,6 +86,9 @@ class insert_doctorState extends State<insert_doctor> {
               textAlign: TextAlign.center,
               enableInteractiveSelection: true,
             ),
+
+            Padding(padding: EdgeInsets.only(top: 15)),
+
             new TextField(
               keyboardAppearance: Brightness.dark,
               scrollPadding: EdgeInsets.all(10.0),
@@ -88,6 +102,10 @@ class insert_doctorState extends State<insert_doctor> {
               textAlign: TextAlign.center,
               enableInteractiveSelection: true,
             ),
+
+            Padding(padding: EdgeInsets.only(top: 15)),
+
+
             new TextField(
               keyboardAppearance: Brightness.dark,
               scrollPadding: EdgeInsets.all(10.0),
@@ -101,6 +119,10 @@ class insert_doctorState extends State<insert_doctor> {
               textAlign: TextAlign.center,
               enableInteractiveSelection: true,
             ),
+
+            Padding(padding: EdgeInsets.only(top: 15)),
+
+
             new TextField(
               keyboardAppearance: Brightness.dark,
               scrollPadding: EdgeInsets.all(10.0),
@@ -148,7 +170,7 @@ class insert_doctorState extends State<insert_doctor> {
             )
           ],
         ),
-      ),
+      )),
     );
   }
 }

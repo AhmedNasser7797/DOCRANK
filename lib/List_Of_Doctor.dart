@@ -1,10 +1,12 @@
+import 'package:final1/doctor_page.dart';
+import 'package:final1/insert_doctor.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class ListOfDoctors extends StatefulWidget {
 
-  String name;
-  int rating;
+
+
 
 
   //ListOfDoctors(this.name, this.rating);
@@ -14,6 +16,9 @@ class ListOfDoctors extends StatefulWidget {
 }
 
 class _ListOfDoctorsState extends State<ListOfDoctors> {
+  String name;
+  var rating=0.0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,26 +76,45 @@ class _ListOfDoctorsState extends State<ListOfDoctors> {
                 child: Row(
                   children: <Widget>[
                     Padding(padding: EdgeInsets.only(left: 1)),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width*0.3,
-                      height: MediaQuery.of(context).size.height*0.2,
-                      child: FittedBox(
-                        fit: BoxFit.cover,
-                        child: Image.asset('assets/images/doc1.jpg'),
+
+
+                    InkWell(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width*0.3,
+                        height: MediaQuery.of(context).size.height*0.2,
+                        child: FittedBox(
+                          fit: BoxFit.cover,
+                          child: Image.asset('assets/images/doc1.jpg'),
+                        ),
                       ),
-                    ),
+        highlightColor: Colors.white,
+        splashColor: Colors.white,
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => doctor_page()),
+        ),
+      ),
+
+
                     Padding(padding: EdgeInsets.only(left: 10)),
                     Column(
                       children: <Widget>[
-                        Text("Dr. zakria"),
+
+
+
+                        Text("Dr. zakria",style: TextStyle(fontSize: 25) ,),
                         Text("400 LE"),
                         SmoothStarRating(
-                          starCount: 3, //put rating variable here
-                          rating: 10,
-                          size: 20.0,
+                          starCount: 5, //put rating variable here
+                          rating: rating,
+                          size: 35.0,
                           color: Colors.yellow,
                           borderColor: Colors.yellow,
-                        )
+                          onRatingChanged: (value) {
+                           setState(() {
+                               rating = value;
+                                       });}
+                        ),
                       ],
                     )
                   ],
@@ -102,6 +126,15 @@ class _ListOfDoctorsState extends State<ListOfDoctors> {
           ),
         ),
       ),
+
+      floatingActionButton: FloatingActionButton(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => insert_doctor()),
+          ),
+          tooltip: 'Add Doctor',
+          child: Icon(Icons.person_add)
+      ), // This trai
     );
   }
 }

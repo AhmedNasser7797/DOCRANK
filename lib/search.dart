@@ -1,3 +1,4 @@
+import 'package:final1/List_Of_Doctor.dart';
 import 'package:flutter/material.dart';
 import './List_Of_Doctors.dart';
 import './doctor_page.dart';
@@ -87,7 +88,7 @@ class _searchState extends State<search> {
                   onPressed:  () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => List_Of_Doctors()),
+                      MaterialPageRoute(builder: (context) => ListOfDoctors()),
                     );
                   },
                   iconSize: 30.0,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './search.dart';
+import 'SignIn.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -132,10 +133,10 @@ class _SignUpState extends State<SignUp> {
               padding: const EdgeInsets.all(16.0),
               textColor: Colors.blue,
               color: Colors.white,
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => SignIn()),),
               shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0)),
-              child: new Text("Back"),
+              child: new Text("Sign In"),
             ),
           ),
           Expanded(
