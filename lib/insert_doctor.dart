@@ -14,18 +14,12 @@ class insert_doctorState extends State<insert_doctor> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: new AppBar(
+      appBar: AppBar(
+
+        title: Text("DocRank"),centerTitle: true,
         leading: IconButton(
-          icon: Icon(
-            Icons.menu,
-            semanticLabel: 'menu',
-          ),
-          onPressed: () {
-            print('Menu button');
-          },
-        ),
-        title: new Text("DocRank"),centerTitle: true,
-        backgroundColor: Colors.lightBlue,
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context)),
       ),
 
       body: new Container(

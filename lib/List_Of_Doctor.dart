@@ -1,15 +1,10 @@
+import 'package:final1/Doctor.dart';
 import 'package:final1/doctor_page.dart';
 import 'package:final1/insert_doctor.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class ListOfDoctors extends StatefulWidget {
-
-
-
-
-
-  //ListOfDoctors(this.name, this.rating);
 
   @override
   _ListOfDoctorsState createState() => _ListOfDoctorsState();
@@ -22,10 +17,15 @@ class _ListOfDoctorsState extends State<ListOfDoctors> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("DOCRANK",style: TextStyle(color: Colors.white,fontSize: 20),),
-        centerTitle: true,
-      ),
+       appBar: AppBar(
+
+        title: Text("DocRank"),centerTitle: true,
+    leading: IconButton(
+    icon: Icon(Icons.arrow_back),
+    onPressed: () => Navigator.pop(context)),
+    ),
+
+
       body: SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -62,7 +62,7 @@ class _ListOfDoctorsState extends State<ListOfDoctors> {
               Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top)),
               Text("Specialist name :" + "nassef",style: TextStyle(color: Colors.blue),),
               Padding(padding: EdgeInsets.only(top: 10)),
-              Text("CLick on Doctor name to show feedback"),
+              Text("CLick on Doctor Photo to show feedback"),
               Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top)),
 
 
@@ -91,7 +91,7 @@ class _ListOfDoctorsState extends State<ListOfDoctors> {
         splashColor: Colors.white,
         onTap: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => doctor_page()),
+          MaterialPageRoute(builder: (context) => Doctor()),
         ),
       ),
 

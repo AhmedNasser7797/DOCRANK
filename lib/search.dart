@@ -21,15 +21,11 @@ class _searchState extends State<search> {
 
       drawer: IconButton(icon: Icon(Icons.menu), onPressed: null),
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-        title: Text(
-          "DOCRANK",
-        ),
-        /*  actions: <Widget>[
-            PopupMenuButton(icon: Icon(Icons.menu),)
-          ],
-*/
+
+        title: Text("DocRank"),centerTitle: true,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context)),
       ),
 
 

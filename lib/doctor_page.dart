@@ -26,25 +26,28 @@ class doctor_pageState  extends State<doctor_page>{
         title: new Text("DocRank"),
         backgroundColor: Colors.lightBlue,
       ),
+
+
       body: new ListView(
         shrinkWrap: true,
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(10.0),
         children: <Widget>[
           new Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween ,
             children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.person,
-                  size: 80.0,
-                  semanticLabel: 'menu',
-                ),
-                onPressed: () {
-                  print('Menu button');
-                },
-              ),
-              new Column(
+             SizedBox(
+              width: MediaQuery.of(context).size.width*0.45,
+              height: MediaQuery.of(context).size.height*0.35,
+              child: FittedBox(
+               fit: BoxFit.fill,
+               child: Image.asset('assets/images/doc1.jpg'),
+                 ),
+                 ),
+              new Container(
+
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround ,
+
                 children: <Widget>[
                   new Text(
                     "Doctor Name",
@@ -65,7 +68,11 @@ class doctor_pageState  extends State<doctor_page>{
 
                   ),
                 ],
-              ),],),
+              ),
+              ),
+            ],
+
+          ),
           new Column(
 
             mainAxisAlignment: MainAxisAlignment.start ,
