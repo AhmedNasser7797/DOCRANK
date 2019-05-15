@@ -1,5 +1,5 @@
+import 'package:final1/search_page.dart';
 import 'package:flutter/material.dart';
-import './search.dart';
 import 'SignIn.dart';
 
 class SignUp extends StatefulWidget {
@@ -147,7 +147,7 @@ class _SignUpState extends State<SignUp> {
             child: new RaisedButton(
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => search()),
+                MaterialPageRoute(builder: (context) => Search()),
               ),
               textColor: Colors.white,
               color: Colors.blue,

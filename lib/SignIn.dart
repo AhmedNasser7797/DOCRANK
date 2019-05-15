@@ -1,13 +1,31 @@
+import 'package:final1/search_page.dart';
 import 'package:flutter/material.dart';
 import './signUp.dart';
-import './search.dart';
 
 class SignIn extends StatefulWidget {
+
   @override
   _SignInState createState() => _SignInState();
 }
 
 class _SignInState extends State<SignIn> {
+  String _error_message="";
+
+  final TextEditingController _userController=new TextEditingController();
+
+  final TextEditingController _passwordController=new TextEditingController();
+  final TextEditingController _emptyController=new TextEditingController();
+
+
+  void _empty(){
+    setState(() {
+      if(_userController.text.isEmpty || _passwordController.text.isEmpty)
+        _error_message="please enter you User Name and Password";
+        return ;
+    }
+    );
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +66,8 @@ class _SignInState extends State<SignIn> {
                ),
              ),
 
+             Text(_error_message,style: TextStyle(color: Colors.red,fontSize: 20), ),
+
              Container(
                  height: 50,
                  margin: const EdgeInsets.only(top:20.0,left: 10.0,right: 10.0, bottom: 30.0),
@@ -58,6 +78,7 @@ class _SignInState extends State<SignIn> {
                        hintText: "User Name",
                        border: InputBorder.none,
                      ),
+                     controller: _userController,
                    ),
                  ),
                  decoration: BoxDecoration(
@@ -75,7 +96,9 @@ class _SignInState extends State<SignIn> {
                      decoration: new InputDecoration(
                        hintText: "password",
                        border: InputBorder.none,
-                     ),
+                     ),obscureText: true,
+
+                     controller: _passwordController,
                    ),
                  ),
                  decoration: BoxDecoration(
@@ -142,9 +165,9 @@ class _SignInState extends State<SignIn> {
                   Padding(padding: EdgeInsets.only(left: 160)),
 
                   new RaisedButton(
-                    onPressed: () =>Navigator.push(
+                    onPressed:/*_empty*/ () =>Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => search()),
+                      MaterialPageRoute(builder: (context) => Search()),
                     ),
                     textColor: Colors.white,
                     color: Colors.blue,
