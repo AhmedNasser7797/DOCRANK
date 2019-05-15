@@ -3,6 +3,7 @@ import 'package:final1/signUp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -25,8 +26,8 @@ class _SignInState extends State<SignIn> {
             email: _userController.text, password: _passwordController.text);
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => Search()));
-      } catch (e) {
-        _errorText = e.toString();
+      } on PlatformException catch (e) {
+        _errorText = e.message;
         if (mounted) setState(() {});
       }
     }
