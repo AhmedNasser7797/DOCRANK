@@ -1,4 +1,5 @@
 class DoctorModel {
+  String id;
   String name;
   String qualifications;
   String address;
