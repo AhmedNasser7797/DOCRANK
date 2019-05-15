@@ -1,5 +1,4 @@
 import 'package:final1/Doctor.dart';
-import 'package:final1/doctor_page.dart';
 import 'package:final1/insert_doctor.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -132,7 +131,7 @@ class _ListOfDoctorsState extends State<ListOfDoctors> {
       floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => insert_doctor()),
+                MaterialPageRoute(builder: (context) => InsertDoctor()),
               ),
           tooltip: 'Add Doctor',
           child: Icon(Icons.person_add)), // This trai

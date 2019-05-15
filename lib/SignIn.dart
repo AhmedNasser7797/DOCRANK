@@ -1,8 +1,9 @@
+import 'package:final1/loading.dart';
 import 'package:final1/search_page.dart';
 import 'package:final1/signUp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
 class SignIn extends StatefulWidget {
@@ -15,18 +16,28 @@ class _SignInState extends State<SignIn> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  Future _submit() async {
+  _submit() async {
     if (_emailController.text.length < 3 ||
         _passwordController.text.length < 3) {
       _errorText = "Please Enter Valid Email and Password";
       if (mounted) setState(() {});
     } else {
       try {
+        // start Loading
+        Loading().loading(context);
+
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: _emailController.text, password: _passwordController.text);
+
+        // stop Loading
+        Navigator.of(context).pop();
+
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => Search()));
       } on PlatformException catch (e) {
+        // stop Loading
+        Navigator.of(context).pop();
+
         _errorText = e.message;
         if (mounted) setState(() {});
       }

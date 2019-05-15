@@ -1,61 +1,119 @@
+import 'package:final1/loading.dart';
+import 'package:final1/models/doctor_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import './List_Of_Doctor.dart';
+import 'package:flutter/services.dart';
 
 class QuestionsPage extends StatefulWidget {
+  final DoctorModel doctorData;
+
+  QuestionsPage(this.doctorData);
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<QuestionsPage> {
-  double val1 = 0.0;
-  double val2 = 0.0;
-  double val3 = 0.0;
-  double val4 = 0.0;
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _behaviourController = TextEditingController();
+  final TextEditingController _waitingController = TextEditingController();
+  String _errorText = "";
 
-  String Message1 = "Rank is 0.0";
-  String Message2 = "Rank is 0.0";
-  String Message3 = "Rank is 0.0";
-  String Message4 = "Rank is 0.0";
+  String message1 = "Rank is 0.0";
+  String message2 = "Rank is 0.0";
+  String message3 = "Rank is 0.0";
+  String message4 = "Rank is 0.0";
+
+  _saveDataAndNavigate() async {
+    if (_priceController.text.length < 3 ||
+        _behaviourController.text.length < 3 ||
+        _waitingController.text.length < 3) {
+      _errorText = "Please Enter valid Data";
+      if (mounted) setState(() {});
+    } else {
+      try {
+        // start Loading
+        Loading().loading(context);
+
+        // Getting Current User Id
+        FirebaseUser user = await FirebaseAuth.instance.currentUser();
+        String userId = user.uid;
+
+        // Sending it's data to DB
+        DatabaseReference ref =
+            FirebaseDatabase.instance.reference().child("doctors");
+
+        DatabaseReference newDocRef = ref.push();
+
+        await newDocRef.set({
+          "name": widget.doctorData.name,
+          "qualifications": widget.doctorData.qualifications,
+          "address": widget.doctorData.address,
+          "phone": widget.doctorData.phone,
+          "workTime": widget.doctorData.workTime,
+          "dateOfFeedBack": widget.doctorData.dateOfFeedBack,
+          "created_at": ServerValue.timestamp,
+        });
+
+        await newDocRef.child("ratings/$userId").set({
+          "userEmail": "${user.email}",
+          "price": _priceController.text,
+          "behaviour": _behaviourController.text,
+          "waitingTime": _waitingController.text,
+          "averageRating":
+              "${(widget.doctorData.rate1 + widget.doctorData.rate2 + widget.doctorData.rate3 + widget.doctorData.rate4) / 4}"
+        });
+
+        // stop Loading
+        Navigator.of(context).pop();
+
+        // Navigate to prev screen
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      } on PlatformException catch (e) {
+        // stop Loading
+        Navigator.of(context).pop();
+        _errorText = e.message;
+        if (mounted) setState(() {});
+      }
+    }
+  }
+
+  void changed1(e) {
+    setState(() {
+      widget.doctorData.rate1 = e;
+      message1 = "Rank is    ${e.toString()}";
+    });
+  }
+
+  void changed2(e) {
+    setState(() {
+      widget.doctorData.rate2 = e;
+      message2 = "Rank is   ${e.toString()}";
+    });
+  }
+
+  void changed3(e) {
+    setState(() {
+      widget.doctorData.rate3 = e;
+      message3 = "Rank is   ${e.toString()}";
+    });
+  }
+
+  void changed4(e) {
+    setState(() {
+      widget.doctorData.rate4 = e;
+      message4 = "Rank is   ${e.toString()}";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    void changed1(e) {
-      setState(() {
-        val1 = e;
-        Message1 = "Rank is    ${e.toString()}";
-      });
-    }
-
-    void changed2(e) {
-      setState(() {
-        val2 = e;
-        Message2 = "Rank is   ${e.toString()}";
-      });
-    }
-
-    void changed3(e) {
-      setState(() {
-        val3 = e;
-        Message3 = "Rank is   ${e.toString()}";
-      });
-    }
-
-    void changed4(e) {
-      setState(() {
-        val4 = e;
-        Message4 = "Rank is   ${e.toString()}";
-      });
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Questions"),
         centerTitle: true,
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context)),
       ),
-
       body: Container(
         padding: EdgeInsets.only(top: 20, right: 20, left: 20),
         child: Center(
@@ -76,10 +134,9 @@ class _MyHomePageState extends State<QuestionsPage> {
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.blue),
                             image: DecorationImage(
-                                image: AssetImage("assets/images/doc1.jpg"),
-                                //user Image
-
-                                fit: BoxFit.cover),
+                              image: AssetImage("assets/images/doc1.jpg"),
+                              fit: BoxFit.cover,
+                            ),
                             borderRadius: BorderRadius.circular(50)),
                       ),
                     ),
@@ -90,21 +147,21 @@ class _MyHomePageState extends State<QuestionsPage> {
                         children: <Widget>[
                           Container(
                             child: Text(
-                              "Mohamed", //doctor name
+                              "${widget.doctorData.name}", //doctor name
                               style: TextStyle(fontSize: 16),
                             ),
                             margin: EdgeInsets.only(bottom: 5),
                           ),
                           Container(
                             child: Text(
-                              "12/2/2018", // date of feedback
+                              "${widget.doctorData.dateOfFeedBack}", // date of feedback
                               style: TextStyle(color: Colors.grey),
                             ),
                             margin: EdgeInsets.only(bottom: 10),
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -129,11 +186,11 @@ class _MyHomePageState extends State<QuestionsPage> {
                                 children: <Widget>[
                                   Container(
                                     width: 280,
-                                    child: new Slider(
+                                    child: Slider(
                                       divisions: 10,
                                       max: 5,
                                       min: 0,
-                                      value: val1,
+                                      value: widget.doctorData.rate1 ?? 0,
                                       onChanged: changed1,
                                       label: "Rank",
                                       activeColor: Colors.blue,
@@ -142,11 +199,12 @@ class _MyHomePageState extends State<QuestionsPage> {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      Message1,
+                                      message1,
                                       style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.blue,
-                                          fontWeight: FontWeight.w900),
+                                        fontSize: 15,
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.w900,
+                                      ),
                                     ),
                                   )
                                 ],
@@ -174,11 +232,11 @@ class _MyHomePageState extends State<QuestionsPage> {
                                 children: <Widget>[
                                   Container(
                                     width: 280,
-                                    child: new Slider(
+                                    child: Slider(
                                       divisions: 10,
                                       max: 5,
                                       min: 0,
-                                      value: val2,
+                                      value: widget.doctorData.rate2 ?? 0,
                                       onChanged: changed2,
                                       label: "Rank",
                                       activeColor: Colors.blue,
@@ -187,7 +245,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      Message2,
+                                      message2,
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: Colors.blue,
@@ -219,11 +277,11 @@ class _MyHomePageState extends State<QuestionsPage> {
                                 children: <Widget>[
                                   Container(
                                     width: 280,
-                                    child: new Slider(
+                                    child: Slider(
                                       divisions: 10,
                                       max: 5,
                                       min: 0,
-                                      value: val3,
+                                      value: widget.doctorData.rate3 ?? 0,
                                       onChanged: changed3,
                                       label: "Rank",
                                       activeColor: Colors.blue,
@@ -232,7 +290,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      Message3,
+                                      message3,
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: Colors.blue,
@@ -264,11 +322,11 @@ class _MyHomePageState extends State<QuestionsPage> {
                                 children: <Widget>[
                                   Container(
                                     width: 280,
-                                    child: new Slider(
+                                    child: Slider(
                                       divisions: 10,
                                       max: 5,
                                       min: 0,
-                                      value: val4,
+                                      value: widget.doctorData.rate4 ?? 0,
                                       onChanged: changed4,
                                       label: "Rank",
                                       activeColor: Colors.blue,
@@ -277,7 +335,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      Message4,
+                                      message4,
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: Colors.blue,
@@ -295,7 +353,8 @@ class _MyHomePageState extends State<QuestionsPage> {
                     Container(
                       width: 50,
                       padding: EdgeInsets.only(top: 10),
-                      child: new TextField(
+                      child: TextField(
+                        controller: _priceController,
                         keyboardAppearance: Brightness.dark,
                         scrollPadding: EdgeInsets.all(10.0),
                         decoration: InputDecoration(
@@ -303,7 +362,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0)),
                         ),
-                        style: new TextStyle(color: Colors.amber),
+                        style: TextStyle(color: Colors.amber),
                         autocorrect: true,
                         textAlign: TextAlign.center,
                         enableInteractiveSelection: true,
@@ -326,6 +385,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                             "Behaviour",
                           ),
                           TextField(
+                            controller: _behaviourController,
                             keyboardAppearance: Brightness.dark,
                             scrollPadding: EdgeInsets.all(10.0),
                             decoration: InputDecoration(
@@ -333,7 +393,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0)),
                             ),
-                            style: new TextStyle(color: Colors.amber),
+                            style: TextStyle(color: Colors.amber),
                             autocorrect: true,
                             textAlign: TextAlign.center,
                             enableInteractiveSelection: true,
@@ -343,6 +403,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                             "Waiting Time",
                           ),
                           TextField(
+                            controller: _waitingController,
                             keyboardAppearance: Brightness.dark,
                             scrollPadding: EdgeInsets.all(10.0),
                             decoration: InputDecoration(
@@ -350,7 +411,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0)),
                             ),
-                            style: new TextStyle(color: Colors.amber),
+                            style: TextStyle(color: Colors.amber),
                             autocorrect: true,
                             textAlign: TextAlign.center,
                             enableInteractiveSelection: true,
@@ -359,21 +420,46 @@ class _MyHomePageState extends State<QuestionsPage> {
                         ],
                       ),
                     ),
+                    Center(
+                      child: Text(
+                        "$_errorText",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        MaterialButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(
+                            "back ",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          color: Colors.deepPurple,
+                        ),
+                        MaterialButton(
+                          shape: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0)),
+                          onPressed: () => _saveDataAndNavigate(),
+                          child: Text(
+                            "next ",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          color: Colors.deepPurple,
+                        ),
+                      ],
+                    )
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
-
-      floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ListOfDoctors()),
-              ),
-          tooltip: 'Done',
-          child: Icon(Icons.person_add)), // This trai
     );
   }
 }

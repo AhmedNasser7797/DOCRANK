@@ -1,5 +1,6 @@
 import 'package:final1/List_Of_Doctor.dart';
 import 'package:final1/List_Of_Doctors.dart';
+import 'package:final1/insert_doctor.dart';
 import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {
@@ -14,9 +15,6 @@ class _SearchState extends State<Search> {
       appBar: AppBar(
         title: Text("DocRank"),
         centerTitle: true,
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context)),
       ),
       body: Container(
         alignment: Alignment.topCenter,
@@ -98,11 +96,11 @@ class _SearchState extends State<Search> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ListOfDoctors()),
+            MaterialPageRoute(builder: (context) => InsertDoctor()),
           );
         },
-        tooltip: "go to Doctors",
-        child: Icon(Icons.arrow_right),
+        tooltip: "Add Doctor",
+        child: Icon(Icons.person_add),
       ),
     );
   }

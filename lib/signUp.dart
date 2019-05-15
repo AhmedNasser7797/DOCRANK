@@ -1,10 +1,10 @@
 import 'package:final1/SignIn.dart';
 import 'package:final1/loading.dart';
 import 'package:final1/search_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
 class SignUp extends StatefulWidget {
@@ -18,7 +18,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  Future _submit() async {
+  _submit() async {
     if (_emailController.text.length < 3 ||
         _nameController.text.length < 3 ||
         _passwordController.text.length < 3) {
@@ -254,7 +254,7 @@ class _SignUpState extends State<SignUp> {
                         Padding(
                           padding: EdgeInsets.only(left: 20.0),
                           child: Text(
-                            "LOGIN",
+                            "SignUp",
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
