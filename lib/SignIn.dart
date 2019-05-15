@@ -12,18 +12,18 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   String _errorText = "";
-  final TextEditingController _userController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   Future _submit() async {
-    if (_userController.text.length < 3 ||
+    if (_emailController.text.length < 3 ||
         _passwordController.text.length < 3) {
       _errorText = "Please Enter Valid Email and Password";
       if (mounted) setState(() {});
     } else {
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: _userController.text, password: _passwordController.text);
+            email: _emailController.text, password: _passwordController.text);
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => Search()));
       } on PlatformException catch (e) {
@@ -94,7 +94,7 @@ class _SignInState extends State<SignIn> {
                 ),
                 Expanded(
                   child: TextField(
-                    controller: _userController,
+                    controller: _emailController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Enter your email',

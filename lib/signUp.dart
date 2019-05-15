@@ -1,6 +1,11 @@
+import 'package:final1/SignIn.dart';
+import 'package:final1/loading.dart';
 import 'package:final1/search_page.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'SignIn.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -8,147 +13,306 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  String _errorText = "";
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future _submit() async {
+    if (_emailController.text.length < 3 ||
+        _nameController.text.length < 3 ||
+        _passwordController.text.length < 3) {
+      _errorText = "Please Enter valid Data";
+      if (mounted) setState(() {});
+    } else {
+      try {
+        // start Loading
+        Loading().loading(context);
+
+        // Creating User in Auth
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: _emailController.text, password: _passwordController.text);
+
+        // Getting Current User Id
+        FirebaseUser user = await FirebaseAuth.instance.currentUser();
+        String userId = user.uid;
+
+        // Sending it's data to DB
+        DatabaseReference ref =
+            FirebaseDatabase.instance.reference().child("users/$userId");
+
+        await ref.set({
+          "name": _nameController.text,
+          "created_at": ServerValue.timestamp,
+        });
+
+        // stop Loading
+        Navigator.of(context).pop();
+
+        // Navigate to another screen
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => Search()));
+      } on PlatformException catch (e) {
+        // stop Loading
+        Navigator.of(context).pop();
+        _errorText = e.message;
+        if (mounted) setState(() {});
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Sign Up"),
-          centerTitle: true,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          "Sign Up",
+          style: TextStyle(
+            color: Colors.black,
+          ),
         ),
-        body: new Container(
-            alignment: Alignment.topCenter,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              alignment: Alignment.topLeft,
-              padding: const EdgeInsets.only(
-                  right: 20.0, left: 20.0, top: 0.0, bottom: 0.0),
-              decoration: new BoxDecoration(
-                  image: new DecorationImage(
-                image: new AssetImage("assets/images/sky.jpg"),
-                fit: BoxFit.cover,
-              )),
-              child: ListView(
-                children: <Widget>[
-                  Container(
-                    height: 100.0,
-                    width: 100.0,
-                    margin: const EdgeInsets.symmetric(vertical: 20.0),
-                    decoration: new BoxDecoration(
-                      //border: Border.all(color: Colors.blue),borderRadius:BorderRadius.circular(100.0) ,
-                      image: new DecorationImage(
-                        image: new AssetImage("assets/images/logo.png"),
-                        fit: BoxFit.contain,
-                      ),
+        centerTitle: true,
+      ),
+      body: ListView(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10.0),
+            height: 100.0,
+            width: 100.0,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/logo.png"),
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 40.0),
+            child: Text(
+              "Your Name",
+              style: TextStyle(color: Colors.black, fontSize: 16.0),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.grey.withOpacity(0.5),
+                width: 1.0,
+              ),
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                  child: Icon(
+                    Icons.person_outline,
+                    color: Colors.grey,
+                  ),
+                ),
+                Container(
+                  height: 30.0,
+                  width: 1.0,
+                  color: Colors.grey.withOpacity(0.5),
+                  margin: EdgeInsets.only(left: 00.0, right: 10.0),
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Enter your name',
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
                   ),
-                  new Container(
-                      height: 55,
-                      margin: const EdgeInsets.only(bottom: 20.0),
-                      child: new ListTile(
-                        leading: const Icon(Icons.person),
-                        title: new TextField(
-                          decoration: new InputDecoration(
-                            hintText: "Name",
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: new BorderRadius.circular(30.0),
-                          border: Border.all(color: Colors.blue, width: 3))),
-                  new Container(
-                      height: 55,
-                      margin: const EdgeInsets.only(bottom: 20.0),
-                      child: new ListTile(
-                        leading: const Icon(Icons.phone),
-                        title: new TextField(
-                          decoration: new InputDecoration(
-                            hintText: "Phone",
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: new BorderRadius.circular(30.0),
-                          border: Border.all(color: Colors.blue, width: 3))),
-                  new Container(
-                      height: 55,
-                      margin: const EdgeInsets.only(bottom: 20.0),
-                      child: new ListTile(
-                        leading: const Icon(Icons.phone_android),
-                        title: new TextField(
-                          decoration: new InputDecoration(
-                            hintText: "password",
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: new BorderRadius.circular(30.0),
-                          border: Border.all(color: Colors.blue, width: 3))),
-                  new Container(
-                      height: 55,
-                      margin: const EdgeInsets.only(bottom: 30.0),
-                      child: new ListTile(
-                        leading: const Icon(Icons.location_on),
-                        title: new TextField(
-                          decoration: new InputDecoration(
-                            hintText: "city",
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: new BorderRadius.circular(30.0),
-                          border: Border.all(color: Colors.blue, width: 3))),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      new Align(
-                        alignment: FractionalOffset.bottomLeft,
-                        child: new RaisedButton(
-                          padding: const EdgeInsets.all(16.0),
-                          textColor: Colors.blue,
-                          color: Colors.white,
-                          onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignIn()),
-                              ),
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(30.0)),
-                          child: new Text("Sign In"),
-                        ),
-                      ),
-                      Expanded(
-                        child: new Column(),
-                      ),
-                      new Align(
-                        alignment: FractionalOffset.bottomRight,
-                        child: new RaisedButton(
-                          onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Search()),
-                              ),
-                          textColor: Colors.white,
-                          color: Colors.blue,
-                          padding: const EdgeInsets.all(16.0),
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(30.0)),
-                          child: new Text(
-                            "Done",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 40.0),
+            child: Text(
+              "Email",
+              style: TextStyle(color: Colors.black, fontSize: 16.0),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.grey.withOpacity(0.5),
+                width: 1.0,
               ),
-            )));
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                  child: Icon(
+                    Icons.person_outline,
+                    color: Colors.grey,
+                  ),
+                ),
+                Container(
+                  height: 30.0,
+                  width: 1.0,
+                  color: Colors.grey.withOpacity(0.5),
+                  margin: EdgeInsets.only(left: 00.0, right: 10.0),
+                ),
+                Expanded(
+                  child: TextField(
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Enter your email',
+                      hintStyle: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 40.0),
+            child: Text(
+              "Password",
+              style: TextStyle(color: Colors.black, fontSize: 16.0),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.grey.withOpacity(0.5),
+                width: 1.0,
+              ),
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                  child: Icon(
+                    Icons.lock_open,
+                    color: Colors.grey,
+                  ),
+                ),
+                Container(
+                  height: 30.0,
+                  width: 1.0,
+                  color: Colors.grey.withOpacity(0.5),
+                  margin: EdgeInsets.only(left: 00.0, right: 10.0),
+                ),
+                Expanded(
+                  child: TextField(
+                    obscureText: true,
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Enter your password',
+                      hintStyle: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Center(
+            child: Text(
+              "$_errorText",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 20.0),
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
+                    splashColor: Colors.blue,
+                    color: Colors.blue,
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(left: 20.0),
+                          child: Text(
+                            "LOGIN",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(),
+                        ),
+                        Transform.translate(
+                          offset: Offset(10.0, 0.0),
+                          child: Container(
+                            padding: EdgeInsets.all(5.0),
+                            child: FlatButton(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(28.0)),
+                              splashColor: Colors.white,
+                              color: Colors.white,
+                              child: Icon(
+                                Icons.arrow_forward,
+                                color: Colors.blue,
+                              ),
+                              onPressed: () => _submit(),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    onPressed: () => _submit(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 20.0),
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
+                    color: Colors.transparent,
+                    child: Container(
+                      padding: EdgeInsets.only(left: 20.0),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "HAVE AN ACCOUNT?",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => SignIn())),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
