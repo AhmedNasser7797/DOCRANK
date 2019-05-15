@@ -134,6 +134,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   Expanded(
                     child: TextField(
+                      obscureText: true,
                       controller: _passwordController,
                       decoration: InputDecoration(
                         border: InputBorder.none,
