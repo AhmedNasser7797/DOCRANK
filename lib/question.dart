@@ -1,5 +1,6 @@
 import 'package:final1/loading.dart';
 import 'package:final1/models/doctor_model.dart';
+import 'package:final1/models/rate_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -7,16 +8,18 @@ import 'package:flutter/services.dart';
 
 class QuestionsPage extends StatefulWidget {
   final DoctorModel doctorData;
+  final bool existingDoctor;
 
-  QuestionsPage(this.doctorData);
+  QuestionsPage(this.doctorData, {this.existingDoctor = false});
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<QuestionsPage> {
-  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
   final TextEditingController _behaviourController = TextEditingController();
   final TextEditingController _waitingController = TextEditingController();
+  RateModel rate = RateModel();
   String _errorText = "";
 
   String message1 = "Rank is 0.0";
@@ -24,8 +27,8 @@ class _MyHomePageState extends State<QuestionsPage> {
   String message3 = "Rank is 0.0";
   String message4 = "Rank is 0.0";
 
-  _saveDataAndNavigate() async {
-    if (_priceController.text.length < 3 ||
+  _saveNewDocData() async {
+    if (_dateController.text.length < 3 ||
         _behaviourController.text.length < 3 ||
         _waitingController.text.length < 3) {
       _errorText = "Please Enter valid Data";
@@ -51,17 +54,21 @@ class _MyHomePageState extends State<QuestionsPage> {
           "address": widget.doctorData.address,
           "phone": widget.doctorData.phone,
           "workTime": widget.doctorData.workTime,
-          "dateOfFeedBack": widget.doctorData.dateOfFeedBack,
+          "price": widget.doctorData.price,
           "created_at": ServerValue.timestamp,
         });
 
         await newDocRef.child("ratings/$userId").set({
           "userEmail": "${user.email}",
-          "price": _priceController.text,
+          "dateOfFeedBack": _dateController.text,
           "behaviour": _behaviourController.text,
           "waitingTime": _waitingController.text,
+          "rate1": rate.rate1,
+          "rate2": rate.rate2,
+          "rate3": rate.rate3,
+          "rate4": rate.rate4,
           "averageRating":
-              "${(widget.doctorData.rate1 + widget.doctorData.rate2 + widget.doctorData.rate3 + widget.doctorData.rate4) / 4}"
+              ((rate.rate1 + rate.rate2 + rate.rate3 + rate.rate4) / 4)
         });
 
         // stop Loading
@@ -79,30 +86,82 @@ class _MyHomePageState extends State<QuestionsPage> {
     }
   }
 
+  _saveRatingOnly() async {
+    if (_dateController.text.length < 3 ||
+        _behaviourController.text.length < 3 ||
+        _waitingController.text.length < 3) {
+      _errorText = "Please Enter valid Data";
+      if (mounted) setState(() {});
+    } else {
+      try {
+        // start Loading
+        Loading().loading(context);
+
+        // Getting Current User Id
+        FirebaseUser user = await FirebaseAuth.instance.currentUser();
+        String userId = user.uid;
+
+        // Sending it's data to DB
+        DatabaseReference ref = FirebaseDatabase.instance
+            .reference()
+            .child("doctors/${widget.doctorData.id}");
+
+        await ref.child("ratings/$userId").set({
+          "userEmail": "${user.email}",
+          "dateOfFeedBack": _dateController.text,
+          "behaviour": _behaviourController.text,
+          "waitingTime": _waitingController.text,
+          "rate1": double.parse(rate.rate1.toString()),
+          "rate2": double.parse(rate.rate2.toString()),
+          "rate3": double.parse(rate.rate3.toString()),
+          "rate4": double.parse(rate.rate4.toString()),
+          "averageRating": double.parse(
+              ((rate.rate1 + rate.rate2 + rate.rate3 + rate.rate4) / 4.0)
+                  .toString())
+        });
+
+        // stop Loading
+        Navigator.of(context).pop();
+
+        // Navigate to prev screen
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      } on PlatformException catch (e) {
+        // stop Loading
+        Navigator.of(context).pop();
+        _errorText = e.message;
+        if (mounted) setState(() {});
+      } catch (e) {
+        _errorText = e.toString();
+        if (mounted) setState(() {});
+      }
+    }
+  }
+
   void changed1(e) {
     setState(() {
-      widget.doctorData.rate1 = e;
+      rate.rate1 = e;
       message1 = "Rank is    ${e.toString()}";
     });
   }
 
   void changed2(e) {
     setState(() {
-      widget.doctorData.rate2 = e;
+      rate.rate2 = e;
       message2 = "Rank is   ${e.toString()}";
     });
   }
 
   void changed3(e) {
     setState(() {
-      widget.doctorData.rate3 = e;
+      rate.rate3 = e;
       message3 = "Rank is   ${e.toString()}";
     });
   }
 
   void changed4(e) {
     setState(() {
-      widget.doctorData.rate4 = e;
+      rate.rate4 = e;
       message4 = "Rank is   ${e.toString()}";
     });
   }
@@ -154,7 +213,9 @@ class _MyHomePageState extends State<QuestionsPage> {
                           ),
                           Container(
                             child: Text(
-                              "${widget.doctorData.dateOfFeedBack}", // date of feedback
+                              "${DateTime.now().year} / "
+                              "${DateTime.now().month} / "
+                              "${DateTime.now().day}", // date of feedback
                               style: TextStyle(color: Colors.grey),
                             ),
                             margin: EdgeInsets.only(bottom: 10),
@@ -190,7 +251,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                                       divisions: 10,
                                       max: 5,
                                       min: 0,
-                                      value: widget.doctorData.rate1 ?? 0,
+                                      value: rate.rate1 ?? 0,
                                       onChanged: changed1,
                                       label: "Rank",
                                       activeColor: Colors.blue,
@@ -236,7 +297,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                                       divisions: 10,
                                       max: 5,
                                       min: 0,
-                                      value: widget.doctorData.rate2 ?? 0,
+                                      value: rate.rate2 ?? 0,
                                       onChanged: changed2,
                                       label: "Rank",
                                       activeColor: Colors.blue,
@@ -281,7 +342,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                                       divisions: 10,
                                       max: 5,
                                       min: 0,
-                                      value: widget.doctorData.rate3 ?? 0,
+                                      value: rate.rate3 ?? 0,
                                       onChanged: changed3,
                                       label: "Rank",
                                       activeColor: Colors.blue,
@@ -326,7 +387,7 @@ class _MyHomePageState extends State<QuestionsPage> {
                                       divisions: 10,
                                       max: 5,
                                       min: 0,
-                                      value: widget.doctorData.rate4 ?? 0,
+                                      value: rate.rate4 ?? 0,
                                       onChanged: changed4,
                                       label: "Rank",
                                       activeColor: Colors.blue,
@@ -354,11 +415,11 @@ class _MyHomePageState extends State<QuestionsPage> {
                       width: 50,
                       padding: EdgeInsets.only(top: 10),
                       child: TextField(
-                        controller: _priceController,
+                        controller: _dateController,
                         keyboardAppearance: Brightness.dark,
                         scrollPadding: EdgeInsets.all(10.0),
                         decoration: InputDecoration(
-                          labelText: "Price :  LE",
+                          labelText: "Date of Feedback :",
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0)),
                         ),
@@ -444,7 +505,9 @@ class _MyHomePageState extends State<QuestionsPage> {
                         MaterialButton(
                           shape: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0)),
-                          onPressed: () => _saveDataAndNavigate(),
+                          onPressed: () => widget.existingDoctor
+                              ? _saveRatingOnly()
+                              : _saveNewDocData(),
                           child: Text(
                             "next ",
                             style: TextStyle(color: Colors.white),

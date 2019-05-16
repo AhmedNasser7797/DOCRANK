@@ -1,69 +1,27 @@
+import 'package:final1/models/rate_model.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
-import './List_Of_Doctor.dart';
 
-class Feedback_Answer extends StatefulWidget {
+class FeedbackAnswer extends StatefulWidget {
+  final RateModel data;
+  FeedbackAnswer(this.data);
   @override
-  _Feedback_AnswerState createState() => _Feedback_AnswerState();
+  _FeedbackAnswerState createState() => _FeedbackAnswerState();
 }
 
-class _Feedback_AnswerState extends State<Feedback_Answer> {
-  double val1 = 0.0;
-  double val2 = 0.0;
-  double val3 = 0.0;
-  double val4 = 0.0;
-
-  var rating = 1.0;
-  var Price;
-  var Behaviour;
-  var Waiting_Time;
-  var feedback_date;
-  var user_name;
-
-  String Message1 = "Rank is 0.0";
-  String Message2 = "Rank is 0.0";
-  String Message3 = "Rank is 0.0";
-  String Message4 = "Rank is 0.0";
-
+class _FeedbackAnswerState extends State<FeedbackAnswer> {
   @override
   Widget build(BuildContext context) {
-    void changed1(e) {
-      setState(() {
-        val1 = e;
-        Message1 = "Rank is    ${e.toString()}";
-      });
-    }
-
-    void changed2(e) {
-      setState(() {
-        val2 = e;
-        Message2 = "Rank is   ${e.toString()}";
-      });
-    }
-
-    void changed3(e) {
-      setState(() {
-        val3 = e;
-        Message3 = "Rank is   ${e.toString()}";
-      });
-    }
-
-    void changed4(e) {
-      setState(() {
-        val4 = e;
-        Message4 = "Rank is   ${e.toString()}";
-      });
-    }
+//    String Message1 = "Rank is ${widget.data.rate1}";
+//    String Message2 = "Rank is ${widget.data.rate2}";
+//    String Message3 = "Rank is ${widget.data.rate3}";
+//    String Message4 = "Rank is ${widget.data.rate4}";
 
     return Scaffold(
       appBar: AppBar(
         title: Text("FeedBack"),
         centerTitle: true,
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context)),
       ),
-
       body: Container(
         padding: EdgeInsets.only(top: 20, right: 20, left: 20),
         child: Center(
@@ -98,14 +56,14 @@ class _Feedback_AnswerState extends State<Feedback_Answer> {
                         children: <Widget>[
                           Container(
                             child: Text(
-                              "User Name:${user_name}", //doctor name
+                              "User Email:${widget.data.userEmail}",
                               style: TextStyle(fontSize: 16),
                             ),
                             margin: EdgeInsets.only(bottom: 5),
                           ),
                           Container(
                             child: Text(
-                              "Date : 12/2/2018${feedback_date}",
+                              "Date : ${widget.data.dateOfFeedBack}",
                               // date of feedback
                               style: TextStyle(color: Colors.grey),
                             ),
@@ -138,10 +96,10 @@ class _Feedback_AnswerState extends State<Feedback_Answer> {
                                 children: <Widget>[
                                   Container(
                                     width: 280,
-                                    child: new SmoothStarRating(
+                                    child: SmoothStarRating(
                                       starCount: 5,
                                       //put rating variable here
-                                      rating: rating,
+                                      rating: widget.data.rate1,
                                       size: 35.0,
                                       color: Colors.yellow,
                                       borderColor: Colors.yellow,
@@ -172,10 +130,10 @@ class _Feedback_AnswerState extends State<Feedback_Answer> {
                                 children: <Widget>[
                                   Container(
                                     width: 280,
-                                    child: new SmoothStarRating(
+                                    child: SmoothStarRating(
                                       starCount: 5,
                                       //put rating variable here
-                                      rating: rating,
+                                      rating: widget.data.rate2,
                                       size: 35.0,
                                       color: Colors.yellow,
                                       borderColor: Colors.yellow,
@@ -206,10 +164,10 @@ class _Feedback_AnswerState extends State<Feedback_Answer> {
                                 children: <Widget>[
                                   Container(
                                     width: 280,
-                                    child: new SmoothStarRating(
+                                    child: SmoothStarRating(
                                       starCount: 5,
                                       //put rating variable here
-                                      rating: rating,
+                                      rating: widget.data.rate3,
                                       size: 35.0,
                                       color: Colors.yellow,
                                       borderColor: Colors.yellow,
@@ -240,10 +198,10 @@ class _Feedback_AnswerState extends State<Feedback_Answer> {
                                 children: <Widget>[
                                   Container(
                                     width: 280,
-                                    child: new SmoothStarRating(
+                                    child: SmoothStarRating(
                                       starCount: 5,
                                       //put rating variable here
-                                      rating: rating,
+                                      rating: widget.data.rate4,
                                       size: 35.0,
                                       color: Colors.yellow,
                                       borderColor: Colors.yellow,
@@ -257,12 +215,6 @@ class _Feedback_AnswerState extends State<Feedback_Answer> {
                         decoration: BoxDecoration(
                             border: Border(
                                 bottom: BorderSide(color: Colors.black)))),
-                    Container(
-                      width: 50,
-                      padding: EdgeInsets.only(top: 10),
-                      child: new Text("Price is : ${Price}",
-                          style: TextStyle(fontSize: 20)),
-                    ),
                     Container(
                       padding: EdgeInsets.all(10),
                       child: Text(
@@ -279,13 +231,13 @@ class _Feedback_AnswerState extends State<Feedback_Answer> {
                           Text(
                             "Behaviour",
                           ),
-                          new Text("Behaviour is : ${Behaviour}",
+                          Text("Behaviour is : ${widget.data.behaviour}",
                               style: TextStyle(fontSize: 20)),
                           Padding(padding: EdgeInsets.all(5)),
                           Text(
                             "Waiting Time",
                           ),
-                          new Text("Waiting Time is : ${Waiting_Time}",
+                          Text("Waiting Time is : ${widget.data.waitingTime}",
                               style: TextStyle(fontSize: 20)),
                           Padding(padding: EdgeInsets.all(5)),
                         ],
@@ -298,14 +250,6 @@ class _Feedback_AnswerState extends State<Feedback_Answer> {
           ),
         ),
       ),
-
-      floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ListOfDoctors()),
-              ),
-          tooltip: 'Done',
-          child: Icon(Icons.person_add)), // This trai
     );
   }
 }

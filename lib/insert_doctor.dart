@@ -131,11 +131,11 @@ class InsertDoctorState extends State<InsertDoctor> {
                   Padding(padding: EdgeInsets.only(top: 15)),
                   TextFormField(
                     validator: (val) => val.length < 3 ? "not Valid" : null,
-                    onSaved: (val) => doctorData.dateOfFeedBack = val,
+                    onSaved: (val) => doctorData.price = val,
                     keyboardAppearance: Brightness.dark,
                     scrollPadding: EdgeInsets.all(10.0),
                     decoration: InputDecoration(
-                      labelText: "Date of your feedback:",
+                      labelText: "Price :   LE",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0)),
                     ),

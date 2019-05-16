@@ -1,30 +1,37 @@
-import 'package:final1/Feedback_Answer.dart';
+import 'package:final1/models/doctor_model.dart';
+import 'package:final1/models/rate_model.dart';
 import 'package:final1/question.dart';
 import 'package:flutter/material.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class Doctor extends StatefulWidget {
+  final DoctorModel data;
+  Doctor(this.data);
+
   @override
   _DoctorState createState() => _DoctorState();
 }
 
 class _DoctorState extends State<Doctor> {
+  List<RateCard> ratings = List<RateCard>();
+
+  @override
+  void initState() {
+    super.initState();
+    widget.data.rating?.forEach((rateaya) {
+      ratings.add(RateCard(rateaya));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var doctorName;
-    var Doctor_Phone;
-    var Doctor_City;
-    var Doctor_Address;
-    var Doctor_work_time;
-    var rating = 1.0;
     return Scaffold(
-      appBar: new AppBar(
-        title: new Text("DocRank"),
+      appBar: AppBar(
+        title: Text("${widget.data.name}"),
         centerTitle: true,
         backgroundColor: Colors.lightBlue,
       ),
       body: SingleChildScrollView(
-        child: new Container(
+        child: Container(
           width: MediaQuery.of(context).size.width,
           alignment: Alignment.topLeft,
           child: Container(
@@ -34,9 +41,13 @@ class _DoctorState extends State<Doctor> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                    padding: EdgeInsets.only(
-                        top: 0.0, left: 5.0, right: 5.0, bottom: 10.0)),
-
+                  padding: EdgeInsets.only(
+                    top: 0.0,
+                    left: 5.0,
+                    right: 5.0,
+                    bottom: 10.0,
+                  ),
+                ),
                 Row(
                   children: <Widget>[
                     SizedBox(
@@ -58,40 +69,31 @@ class _DoctorState extends State<Doctor> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          new Text("Name:"),
-                          new Text(
-                            "${doctorName}",
-                            style: new TextStyle(
+                          Text("Name:"),
+                          Text(
+                            "${widget.data.name}",
+                            style: TextStyle(
                               color: Colors.deepOrange,
                             ),
                           ),
-                          new Text("Phone:"),
-                          new Text(
-                            "${Doctor_Phone}",
-                            style: new TextStyle(
+                          Text("Phone:"),
+                          Text(
+                            "${widget.data.phone}",
+                            style: TextStyle(
                               color: Colors.deepOrange,
                             ),
                           ),
-                          new Text("City:"),
-                          new Text(
-                            "${Doctor_City}",
-                            style: new TextStyle(
+                          Text("City:"),
+                          Text(
+                            "${widget.data.address}",
+                            style: TextStyle(
                               color: Colors.deepOrange,
                             ),
                           ),
-                          new Text(
-                            "Doctor Address",
-                          ),
-                          new Text(
-                            "${Doctor_Address}",
-                            style: new TextStyle(
-                              color: Colors.deepOrange,
-                            ),
-                          ),
-                          new Text("Doctor work time"),
-                          new Text(
-                            "${Doctor_work_time}",
-                            style: new TextStyle(
+                          Text("Doctor work time"),
+                          Text(
+                            "${widget.data.workTime}",
+                            style: TextStyle(
                               color: Colors.deepOrange,
                             ),
                           ),
@@ -100,15 +102,19 @@ class _DoctorState extends State<Doctor> {
                     ),
                   ],
                 ),
-
                 Padding(
-                    padding: EdgeInsets.only(
-                        top: 0.0, left: 30.0, right: 5.0, bottom: 10.0)),
+                  padding: EdgeInsets.only(
+                    top: 0.0,
+                    left: 30.0,
+                    right: 5.0,
+                    bottom: 10.0,
+                  ),
+                ),
 
                 Center(
                   child: Container(
                     alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width * .7,
+                    width: MediaQuery.of(context).size.width * 0.7,
                     padding: EdgeInsets.only(left: 30),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.black),
@@ -126,106 +132,19 @@ class _DoctorState extends State<Doctor> {
 
                 Center(
                   child: Text(
-                    ""
                     "click On Username to see Feedback",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 15),
                   ),
                 ),
-
-                // start user Feedback
-                Row(
-                  children: <Widget>[
-                    Padding(padding: EdgeInsets.only(top: 50)),
-                    Center(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * .9,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            border: Border.all(color: Colors.blue)),
-                        child: Row(
-                          children: <Widget>[
-                            InkWell(
-                              child: Text("User Name"),
-                              onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            Feedback_Answer()),
-                                  ),
-                            ),
-                            SmoothStarRating(
-                              starCount: 5, //put rating variable here
-                              rating: rating,
-                              size: 35.0,
-                              color: Colors.yellow,
-                              borderColor: Colors.yellow,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // End Of First User
-                  ],
-                ),
-                Padding(padding: EdgeInsets.only(top: 10)),
+                // add rating list
                 Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * .9,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        border: Border.all(color: Colors.blue)),
-                    child: Row(
-                      children: <Widget>[
-                        InkWell(
-                          child: Text("User Name"),
-                          onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Feedback_Answer()),
-                              ),
-                        ),
-                        SmoothStarRating(
-                          starCount: 5, //put rating variable here
-                          rating: rating,
-                          size: 35.0,
-                          color: Colors.yellow,
-                          borderColor: Colors.yellow,
-                        ),
-                      ],
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: ratings,
                   ),
-                ),
-
-                Padding(padding: EdgeInsets.only(top: 10)),
-                Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * .9,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        border: Border.all(color: Colors.blue)),
-                    child: Row(
-                      children: <Widget>[
-                        InkWell(
-                          child: Text("User Name"),
-                          onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Feedback_Answer()),
-                              ),
-                        ),
-                        SmoothStarRating(
-                          starCount: 5, //put rating variable here
-                          rating: rating,
-                          size: 35.0,
-                          color: Colors.yellow,
-                          borderColor: Colors.yellow,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                )
               ],
             ),
           ),
@@ -235,10 +154,14 @@ class _DoctorState extends State<Doctor> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => QuestionsPage(null)),
+              MaterialPageRoute(
+                  builder: (context) => QuestionsPage(
+                        widget.data,
+                        existingDoctor: true,
+                      )),
             );
           },
-          tooltip: 'Add Doctor',
+          tooltip: 'Add Rating',
           child: Icon(Icons.person_add)),
     );
   }
