@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:final1/SignIn.dart';
 import 'package:final1/loading.dart';
 import 'package:final1/search_page.dart';
@@ -6,7 +8,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:io';
 
 class SignUp extends StatefulWidget {
   @override
@@ -40,7 +41,7 @@ class _SignUpState extends State<SignUp> {
 
         // Sending it's data to DB
         DatabaseReference ref =
-        FirebaseDatabase.instance.reference().child("users/$userId");
+            FirebaseDatabase.instance.reference().child("users/$userId");
 
         await ref.set({
           "name": _nameController.text,
