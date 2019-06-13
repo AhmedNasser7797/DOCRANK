@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 import './question.dart';
 
-class doctor_page extends StatefulWidget {
+class DoctorPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return new doctor_pageState();
+    return new DoctorPageState();
   }
 }
 
-class doctor_pageState extends State<doctor_page> {
+class DoctorPageState extends State<DoctorPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

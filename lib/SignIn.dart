@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:final1/loading.dart';
 import 'package:final1/search_page.dart';
 import 'package:final1/signUp.dart';
@@ -36,9 +38,16 @@ class _SignInState extends State<SignIn> {
             .push(MaterialPageRoute(builder: (context) => Search()));
       } on PlatformException catch (e) {
         // stop Loading
-        Navigator.of(context).pop();
-
+        Navigator.of(context).pop(); // pop Loading Dialog
         _errorText = e.message;
+      } on SocketException catch (e) {
+        Navigator.of(context).pop(); // pop Loading Dialog
+        _errorText = e.message;
+      } catch (e) {
+        Navigator.of(context).pop(); // pop Loading Dialog
+        _errorText = e.toString();
+      } finally {
+        // rebuild state if exist;
         if (mounted) setState(() {});
       }
     }
