@@ -6,6 +6,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
 
 class SignUp extends StatefulWidget {
   @override
@@ -39,7 +40,7 @@ class _SignUpState extends State<SignUp> {
 
         // Sending it's data to DB
         DatabaseReference ref =
-            FirebaseDatabase.instance.reference().child("users/$userId");
+        FirebaseDatabase.instance.reference().child("users/$userId");
 
         await ref.set({
           "name": _nameController.text,
@@ -53,9 +54,16 @@ class _SignUpState extends State<SignUp> {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => Search()));
       } on PlatformException catch (e) {
-        // stop Loading
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(); // pop Loading Dialog
         _errorText = e.message;
+      } on SocketException catch (e) {
+        Navigator.of(context).pop(); // pop Loading Dialog
+        _errorText = e.message;
+      } catch (e) {
+        Navigator.of(context).pop(); // pop Loading Dialog
+        _errorText = e.toString();
+      } finally {
+        // rebuild state if exist;
         if (mounted) setState(() {});
       }
     }
