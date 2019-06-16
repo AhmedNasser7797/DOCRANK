@@ -48,9 +48,9 @@ class DoctorCard extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: InkWell(
         onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Doctor(data)),
-            ),
+          context,
+          MaterialPageRoute(builder: (context) => Doctor(data)),
+        ),
         child: Container(
           width: MediaQuery.of(context).size.width * 0.9,
           margin: EdgeInsets.only(left: 20),
@@ -62,35 +62,44 @@ class DoctorCard extends StatelessWidget {
               Radius.circular(10),
             ),
           ),
-          child: Row(
-            children: <Widget>[
-              Padding(padding: EdgeInsets.only(left: 1)),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3,
-                height: MediaQuery.of(context).size.height * 0.2,
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: Image.asset('assets/images/doc1.jpg'),
+          child: SingleChildScrollView(
+
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: <Widget>[
+
+
+                Padding(padding: EdgeInsets.only(left: 1)),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.2,
+
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: Image.asset('assets/images/doc1.jpg'),
+                  ),
                 ),
-              ),
-              Padding(padding: EdgeInsets.only(left: 10)),
-              Column(
-                children: <Widget>[
-                  Text(
-                    "Dr. ${data.name}",
-                    style: TextStyle(fontSize: 25),
-                  ),
-                  SmoothStarRating(
-                    starCount: 5,
-                    rating: 2.5,
-                    // TODO :(Nassef) => find a way to view av of av of user
-                    size: 35.0,
-                    color: Colors.yellow,
-                    borderColor: Colors.yellow,
-                  ),
-                ],
-              ),
-            ],
+                Padding(padding: EdgeInsets.only(left: 10)),
+
+                Column(
+                  children: <Widget>[
+
+                    Text(
+                      "Dr. ${data.name}",
+                      style: TextStyle(fontSize: 25,),
+                    ),
+                    SmoothStarRating(
+                      starCount: 5,
+                      rating: 2.5,
+                      // TODO :(Nassef) => find a way to view av of av of user
+                      size: 35.0,
+                      color: Colors.yellow,
+                      borderColor: Colors.yellow,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
