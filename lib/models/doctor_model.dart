@@ -82,6 +82,7 @@ class DoctorCard extends StatelessWidget {
                 Padding(padding: EdgeInsets.only(left: 10)),
 
                 Column(
+
                   children: <Widget>[
 
                     Text(
