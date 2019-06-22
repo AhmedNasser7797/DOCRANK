@@ -5,6 +5,10 @@ import 'package:final1/models/doctor_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:final1/SignIn.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:final1/auth.dart';
+import 'root.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -12,9 +16,55 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
+  _SearchState({this.auth,this.onSignOut});
+final BaseAuth auth ;
+final VoidCallback onSignOut;
+
   final TextEditingController _depController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   List<DoctorModel> doctors = List<DoctorModel>();
+  String aa="aaaaaaaaaaaa";
+
+  
+String email1="";
+ Future<String>  getCurrentUser() async {
+
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+
+    return user.email;
+
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getCurrentUser();
+    super.initState();
+
+
+    getCurrentUser().then((String qqqq)=> setState (() {email1=qqqq;}));
+    setState(() {});
+
+  }
+
+
+  void _signOut()async{
+    try{
+
+      await auth.signOut();
+      onSignOut();
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => SignIn()));
+
+
+    }
+    catch(e){
+      print(e);
+    }
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => SignIn()));
+  }
 
   _searchByDep(String value) async {
     try {
@@ -50,6 +100,7 @@ class _SearchState extends State<Search> {
   }
 
   _searchByCity(String value) async {
+   print(getCurrentUser().then((value){return value;})) ;
     try {
       Loading().loading(context);
       // formatting List
@@ -88,7 +139,13 @@ class _SearchState extends State<Search> {
       appBar: AppBar(
         title: Text("Search Screen"),
         centerTitle: true,
+        actions: <Widget>[
+          new FlatButton(onPressed: _signOut, child: new Text("LogOut" ,style: new TextStyle(
+              color:Colors.white ),)),
+        ],
       ),
+      drawer: buikdD(context,email1),
+
       body: Container(
         alignment: Alignment.topCenter,
         padding: EdgeInsets.only(left: 10, right: 10),
@@ -206,10 +263,43 @@ class _SearchState extends State<Search> {
             context,
             MaterialPageRoute(builder: (context) => InsertDoctor()),
           );
+      print(getCurrentUser());
         },
         tooltip: "Add Doctor",
         child: Icon(Icons.person_add),
       ),
     );
   }
+}
+Widget buikdD(BuildContext context, String s ,){
+  return
+   Drawer(
+
+      child: ListView(
+        children: <Widget>[
+          UserAccountsDrawerHeader(
+            accountName: Text("Ashish Rawat"),
+            accountEmail: Text(s),
+            currentAccountPicture: CircleAvatar(
+
+              child: Text(
+                "A",
+                style: TextStyle(fontSize: 40.0),
+              ),
+            ),
+          ),
+          ListTile(
+            title: Text("Ttem 1"),
+            trailing: Icon(Icons.arrow_forward),
+          ),
+          ListTile(
+            title: Text("Item 2"),
+            trailing: Icon(Icons.arrow_forward),
+
+
+          ),
+        ],
+      ),
+    //this will just add the Navigation Drawer Icon
+  );
 }
